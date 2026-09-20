@@ -5,9 +5,9 @@ import { Sparkles, MapPin, Calendar, Clock, ChevronDown } from "lucide-react";
 const INVITATION = {
   couple: {
     bride: "පියුමි",
-    groom: "අදිත්‍ය",
+    groom: "ආදිත්‍ය",
     brideFull: "පියුමි සන්දීපනී",
-    groomFull: "අදිත්‍ය ඉඳුවර",
+    groomFull: "ආදිත්‍ය ඉඳුවර",
   },
   date: {
     displayNumeric: "27 . 01 . 2027",
@@ -623,10 +623,10 @@ export default function WeddingInvitation() {
                     </h3>
 
                     <p className="text-slate-700">
-                      කේ.ඩබ්. නේරංජා මහතාගේ සහ එච්.කේ.කේ. චාමරි මධුවන්ති මහත්මියගේ ආදරණීය පුත් වන
+                      කේ.ඩබ්. නේරංජ මහතාගේ සහ එච්.කේ.කේ. චමරි මධුවන්ති මහත්මියගේ ආදරණීය පුත් වන
                     </p>
                     <h3 className="text-3xl md:text-4xl font-bold text-[#d4af37] my-2">
-                      අදිත්‍ය ඉඳුවර
+                      ආදිත්‍ය ඉඳුවර
                     </h3>
 
                     <p className="text-slate-700 max-w-2xl mx-auto pt-2">
@@ -716,7 +716,7 @@ export default function WeddingInvitation() {
               </div>
             </section>
 
-            <section 
+            <section
               className="relative py-14 md:py-48 flex flex-col items-center overflow-hidden"
               style={{
                 backgroundImage: 'url("/ChatGPT%20Image%20Jul%2021,%202026,%2006_25_22%20PM.png")',
@@ -798,7 +798,7 @@ export default function WeddingInvitation() {
             </section>
 
 
-            <section 
+            <section
               className="relative py-16 md:py-48 flex flex-col items-center overflow-hidden"
               style={{
                 backgroundImage: 'url("/ChatGPT%20Image%20Jul%2021,%202026,%2006_25_22%20PM.png")',
@@ -912,7 +912,7 @@ export default function WeddingInvitation() {
 
 
 
-            <section 
+            <section
               className="w-full relative overflow-hidden py-14 md:py-32"
               style={{
                 backgroundImage: 'url("/ChatGPT%20Image%20Jul%2021,%202026,%2006_25_22%20PM.png")',
@@ -939,17 +939,17 @@ export default function WeddingInvitation() {
                     ස්තූතියි
                   </h2>
 
-                  <p className="text-[#c5a059]/70 text-sm md:text-base tracking-[0.25em] font-medium leading-loose max-w-3xl mx-auto">
+                  <p className="text-[#c5a059]/85 text-sm md:text-base tracking-[0.25em] font-medium leading-loose max-w-3xl mx-auto">
                     සෙනෙහසින් ලියැවෙන අපගේ ජීවිත කතාවේ සුන්දරතම දිනය, ඔබගේ පැමිණීමෙන් තවත් අර්ථවත් වනු ඇතැයි අප විශ්වාස කරමු
                   </p>
 
 
 
-                  <p className="text-sm md:text-base tracking-[0.5em] text-[#c5a059]/50 font-bold pt-12">
+                  <p className="text-sm md:text-base tracking-[0.5em] text-[#c5a059]/70 font-bold pt-12">
                     © 2027 {INVITATION.couple.bride} සහ {INVITATION.couple.groom}
                   </p>
-                  
-                  <p className="text-[#c5a059]/60 text-[10px] md:text-xs mt-4 font-sans tracking-widest uppercase">
+
+                  <p className="text-[#c5a059]/75 text-[10px] md:text-xs mt-4 font-sans tracking-widest uppercase">
                     Want a beautiful wedding website like this? Create yours with{" "}
                     <a
                       target="_blank"
