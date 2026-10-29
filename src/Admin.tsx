@@ -1,199 +1,137 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { Link2, Copy, Check, MessageSquareText } from 'lucide-react';
+import { PREFIXES, encodeGuest } from './guestLink';
 
-interface GeneratedLink {
-  id: string;
-  prefix: string;
-  guestName: string;
-  url: string;
-  createdAt: string;
-}
+const COUPLE_SIGNATURE = 'ආදිත්‍ය සහ පියුමි';
+
+const buildMessage = (guestName: string, prefix: string, url: string) =>
+  `ආදරණීය ${guestName}
+${prefix} ❤️
+
+අපේ ආදර කතාවේ සුන්දරම පරිච්ඡේදය ආරම්භ කරන මේ සුවිශේෂී මොහොතේ, අපේ ජීවිතයේ වටිනාම දිනය වන විවාහ මංගල්‍යය සමඟින් එක්වන්නට ${prefix} හදපිරි සෙනෙහසින් ආරාධනා කරමු. 💍🤍
+
+අපගේ ආදරය, සතුට සහ අලුත් ජීවිතයක බලාපොරොත්තු පිරුණු මේ සුන්දර දිනයේ සියලු විස්තර පහත සබැඳිය ඔස්සේ නැරඹිය හැකියි.
+
+විවාහ ආරාධනා පත්‍රය🌸
+${url}
+
+ආදරයෙන් හා සෙනෙහසින්
+
+❤️ ${COUPLE_SIGNATURE} ❤️
+
+දෙහදක් එක්වන, ආදරයෙන් ජීවිතය ලියැවෙන අලුත් ආරම්භයක්… ✨💐`;
 
 export default function Admin() {
-  const [prefix, setPrefix] = useState('Mr. & Mrs.');
+  const [prefix, setPrefix] = useState(PREFIXES[0]);
   const [guestName, setGuestName] = useState('');
-  const [links, setLinks] = useState<GeneratedLink[]>([]);
-  const [copiedId, setCopiedId] = useState<string | null>(null);
-
-  useEffect(() => {
-    const saved = localStorage.getItem('generatedLinks');
-    if (saved) {
-      setLinks(JSON.parse(saved));
-    }
-  }, []);
-
-  const prefixes = [
-    'Mr. & Mrs.',
-    'Mr.',
-    'Mrs.',
-    'Ms.',
-    'Miss',
-    'Dr. & Mrs.',
-    'Dr.',
-    'Prof.',
-    'Rev.',
-    'To'
-  ];
+  const [generated, setGenerated] = useState<{ url: string; message: string } | null>(null);
+  const [copied, setCopied] = useState<'link' | 'message' | null>(null);
 
   const handleGenerate = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!guestName.trim()) return;
+    const name = guestName.trim();
+    if (!name) return;
 
-    const fullName = `${prefix} ${guestName.trim()}`;
-    const baseUrl = window.location.origin;
-    const url = `${baseUrl}/?to=${encodeURIComponent(fullName)}`;
-    
-    const newLink: GeneratedLink = {
-      id: crypto.randomUUID(),
-      prefix,
-      guestName: guestName.trim(),
-      url,
-      createdAt: new Date().toLocaleString('en-GB', { 
-        day: '2-digit', 
-        month: '2-digit', 
-        year: 'numeric', 
-        hour: '2-digit', 
-        minute: '2-digit' 
-      }),
-    };
-
-    const newLinks = [newLink, ...links];
-    setLinks(newLinks);
-    localStorage.setItem('generatedLinks', JSON.stringify(newLinks));
-    setGuestName('');
+    const url = `${window.location.origin}/?g=${encodeGuest(name, PREFIXES.indexOf(prefix))}`;
+    setGenerated({ url, message: buildMessage(name, prefix, url) });
+    setCopied(null);
   };
 
-  const handleCopy = async (link: GeneratedLink) => {
+  const handleCopy = async (kind: 'link' | 'message') => {
+    if (!generated) return;
     try {
-      await navigator.clipboard.writeText(link.url);
-      setCopiedId(link.id);
-      setTimeout(() => setCopiedId(null), 2000);
+      await navigator.clipboard.writeText(kind === 'link' ? generated.url : generated.message);
+      setCopied(kind);
+      setTimeout(() => setCopied(null), 2000);
     } catch (err) {
       console.error('Failed to copy', err);
     }
   };
 
-  const handleDelete = (id: string) => {
-    const newLinks = links.filter(l => l.id !== id);
-    setLinks(newLinks);
-    localStorage.setItem('generatedLinks', JSON.stringify(newLinks));
-  };
+  const fieldClass =
+    'w-full rounded-[10px] border border-[#b98a2f]/45 bg-[#fcf8ee] px-4 py-3 text-[#5a4a33] placeholder:text-[#b9a888] focus:border-[#8c6420] focus:outline-none focus:ring-1 focus:ring-[#b98a2f]/40 transition-colors';
 
   return (
-    <div className="min-h-screen bg-slate-50 py-12 px-4 font-sans">
-      <div className="max-w-3xl mx-auto space-y-8">
-        
-        {/* Generator Card */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
-          <h1 className="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-600">
-              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
-            </svg>
-            LINK GENERATOR
+    <div
+      className="h-[100dvh] overflow-y-auto px-4 py-12"
+      style={{ background: 'rgba(237, 223, 184, 0.4)', fontFamily: "'Abhaya Libre', Arial, sans-serif" }}
+    >
+      <div className="mx-auto max-w-xl rounded-[28px] bg-gradient-to-b from-[#e7cf8c] via-[#b98a2f] to-[#8c6420] p-[1.5px] shadow-[0_40px_80px_-40px_rgba(120,86,30,0.6)]">
+        <div className="rounded-[26.5px] bg-[#fcf8ee] p-6 md:p-10">
+          <h1
+            className="mb-8 flex items-center justify-center gap-2 text-sm font-semibold uppercase tracking-[0.34em] text-[#8c6420]"
+            style={{ fontFamily: "'Montserrat', Arial, sans-serif" }}
+          >
+            <Link2 className="h-5 w-5 text-[#b98a2f]" />
+            Link Generator
           </h1>
 
           <form onSubmit={handleGenerate} className="space-y-5">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-slate-600">Select Prefix</label>
-                <select
-                  value={prefix}
-                  onChange={(e) => setPrefix(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all appearance-none"
-                >
-                  {prefixes.map(p => (
-                    <option key={p} value={p}>{p}</option>
-                  ))}
-                </select>
-              </div>
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="prefix" className="text-[0.9rem] font-semibold text-[#8c6420]">
+                Select Prefix
+              </label>
+              <select id="prefix" value={prefix} onChange={(e) => setPrefix(e.target.value)} className={fieldClass}>
+                {PREFIXES.map((p) => (
+                  <option key={p} value={p}>
+                    {p}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-              <div className="space-y-2 md:col-span-2">
-                <label className="text-sm font-semibold text-slate-600">Guest Name</label>
-                <input
-                  type="text"
-                  placeholder="e.g. John Doe"
-                  value={guestName}
-                  onChange={(e) => setGuestName(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all placeholder:text-slate-400"
-                  required
-                />
-              </div>
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="guest-name" className="text-[0.9rem] font-semibold text-[#8c6420]">
+                Guest Name
+              </label>
+              <input
+                id="guest-name"
+                type="text"
+                placeholder="e.g. Nimal"
+                value={guestName}
+                onChange={(e) => setGuestName(e.target.value)}
+                className={fieldClass}
+                required
+              />
             </div>
 
             <button
               type="submit"
-              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3.5 rounded-xl transition-colors shadow-sm active:scale-[0.99] flex justify-center items-center gap-2"
+              className="inline-flex w-full items-center justify-center gap-2.5 rounded-full bg-gradient-to-br from-[#b98a2f] to-[#8c6420] py-4 text-[1.02rem] font-bold text-[#fdf8ec] shadow-[0_14px_30px_-12px_rgba(120,86,30,0.6)] transition-transform duration-200 hover:-translate-y-0.5 active:scale-95"
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="12" y1="5" x2="12" y2="19"></line>
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-              </svg>
-              Generate Link
+              <MessageSquareText className="h-4 w-4" />
+              Generate Message
             </button>
           </form>
-        </div>
 
-        {/* Generated Links List */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
-          <h2 className="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400">
-              <circle cx="12" cy="12" r="10"></circle>
-              <polyline points="12 6 12 12 16 14"></polyline>
-            </svg>
-            Recently Generated Links
-          </h2>
+          {generated && (
+            <div className="mt-8 space-y-4">
+              <pre className="whitespace-pre-wrap break-words rounded-2xl border border-[#b98a2f]/35 bg-white/70 p-5 text-[0.95rem] leading-[1.8] text-[#5a4a33]" style={{ fontFamily: 'inherit' }}>
+                {generated.message}
+              </pre>
 
-          {links.length === 0 ? (
-            <div className="text-center py-10 text-slate-400 text-sm">
-              No links generated yet.
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {links.map((link) => (
-                <div key={link.id} className="group flex flex-col md:flex-row md:items-center justify-between p-4 rounded-xl border border-slate-100 bg-slate-50/50 hover:border-slate-200 transition-colors gap-4">
-                  <div className="min-w-0">
-                    <p className="font-medium text-slate-800 truncate">
-                      {link.prefix} {link.guestName}
-                    </p>
-                    <p className="text-xs text-slate-500 mt-1">
-                      {link.createdAt.replace(',', '')}
-                    </p>
-                  </div>
-
-                  <div className="flex items-center gap-2 shrink-0">
-                    <button
-                      onClick={() => handleCopy(link)}
-                      className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 text-sm font-medium rounded-lg transition-colors"
-                    >
-                      {copiedId === link.id ? (
-                        <>
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-500"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                          Copied!
-                        </>
-                      ) : (
-                        <>
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                          Copy
-                        </>
-                      )}
-                    </button>
-                    
-                    <button
-                      onClick={() => handleDelete(link.id)}
-                      className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                      title="Delete link"
-                    >
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                    </button>
-                  </div>
-                </div>
-              ))}
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <button
+                  type="button"
+                  onClick={() => handleCopy('link')}
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-[#b98a2f]/50 px-5 py-3 font-semibold text-[#8c6420] transition-colors hover:bg-[#b98a2f]/10"
+                >
+                  {copied === 'link' ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                  {copied === 'link' ? 'Copied!' : 'Copy Link'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleCopy('message')}
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-br from-[#b98a2f] to-[#8c6420] px-5 py-3 font-semibold text-[#fdf8ec] shadow-[0_10px_20px_-12px_rgba(120,86,30,0.7)] transition-transform hover:-translate-y-0.5"
+                >
+                  {copied === 'message' ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                  {copied === 'message' ? 'Copied!' : 'Copy Full Message'}
+                </button>
+              </div>
             </div>
           )}
         </div>
-
       </div>
     </div>
   );
 }
-
