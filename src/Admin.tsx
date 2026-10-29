@@ -5,8 +5,7 @@ import { PREFIXES, encodeGuest } from './guestLink';
 const COUPLE_SIGNATURE = 'ආදිත්‍ය සහ පියුමි';
 
 const buildMessage = (guestName: string, prefix: string, url: string) =>
-  `ආදරණීය ${guestName}
-${prefix} ❤️
+  `ආදරණීය ${guestName} ${prefix} ❤️
 
 අපේ ආදර කතාවේ සුන්දරම පරිච්ඡේදය ආරම්භ කරන මේ සුවිශේෂී මොහොතේ, අපේ ජීවිතයේ වටිනාම දිනය වන විවාහ මංගල්‍යය සමඟින් එක්වන්නට ${prefix} හදපිරි සෙනෙහසින් ආරාධනා කරමු. 💍🤍
 

@@ -669,11 +669,10 @@ export default function WeddingInvitation() {
                           <p className="text-[#6b5a40]">අතිනත ගැනීමේ ප්‍රීති නිමිත්තෙන්</p>
                           {decodedGuest ? (
                             <>
-                              <p className="mt-4 text-[#8a7a60]">
-                                ආදරණීය{" "}
-                                <span className="text-2xl md:text-3xl font-bold text-[#8c6420]">{decodedGuest.name}</span>
+                              <p className="mt-4 text-[#8a7a60]">ආදරණීය</p>
+                              <p className="mt-1 text-2xl md:text-3xl font-bold text-[#8c6420]">
+                                {decodedGuest.name} {decodedGuest.prefix}
                               </p>
-                              <p className="mt-1 text-xl md:text-2xl font-bold text-[#8c6420]">{decodedGuest.prefix}</p>
                             </>
                           ) : (
                             <p className="mt-4 text-2xl md:text-3xl font-bold text-[#8c6420]">
