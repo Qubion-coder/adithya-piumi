@@ -13,11 +13,11 @@ const INVITATION = {
   date: {
     displayNumeric: "27 . 01 . 2027",
     displayLong: "වර්ෂ 2027 ක් වූ ජනවාරි මස 27 වන දින",
-    countdownTarget: "2027-01-27T09:29:00+05:30",
+    countdownTarget: "2027-01-27T09:32:00+05:30",
     countdownCaption: "2027 ජනවාරි 27 බදාදා",
   },
   time: {
-    ceremonyStart: "පෙ.ව. 9:29",
+    ceremonyStart: "පෙ.ව. 9:32",
     ceremonyEnd: "ප.ව. 3:30",
     registration: "පෙ.ව. 11:00",
     welcome: "පෙ.ව. 9:00",
